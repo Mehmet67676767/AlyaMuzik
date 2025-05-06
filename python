@@ -1,0 +1,27 @@
+from telethon.sync import TelegramClient
+from telethon.tl.functions.channels import InviteToChannelRequest
+import time
+
+api_id = 28943338  # my.telegram.org'dan alınan API ID
+api_hash = '0480f33359f17a50ead1257bbb7a7de4'  # API Hash
+source_group = 'https://t.me/sivilcevirmevar'  # örnek: 'https://t.me/kaynakgrup'
+target_group = 'https://t.me/sohbetgrubufree'  # örnek: 'https://t.me/hedefgrup'
+
+client = TelegramClient('session', api_id, api_hash)
+
+client.start()
+
+# Kaynak gruptaki kullanıcıları çek
+source = client.get_entity(source_group)
+target = client.get_entity(target_group)
+
+users = client.get_participants(source)
+
+for user in users:
+    try:
+        client(InviteToChannelRequest(target, [user.id]))
+        print(f'{user.username} başarıyla eklendi.')
+        time.sleep(3)  # spam engeli için bekle
+    except Exception as e:
+        print(f'Hata: {e}')
+        time.sleep(5)
